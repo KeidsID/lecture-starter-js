@@ -141,12 +141,8 @@ export default async function fight(firstFighter, secondFighter) {
         }
 
         function fightAction() {
-            // assign block status
             p1.isBlock = pressedKeys.has(PlayerOneBlock);
             p2.isBlock = pressedKeys.has(PlayerTwoBlock);
-
-            // do attack action
-            // prevent attack if block is active
 
             if (pressedKeys.has(PlayerOneAttack) && !p1.isBlock) {
                 if (!p2.isBlock) p2.damageHp(getP1DamagePower());
@@ -156,10 +152,6 @@ export default async function fight(firstFighter, secondFighter) {
                 if (!p1.isBlock) p1.damageHp(getP2DamagePower());
             }
 
-            // do critical attack action
-            // block won't prevent critical hit
-            // instead it has cooldown for 10 sec
-
             if (PlayerOneCriticalHitCombination.every(key => pressedKeys.has(key))) {
                 if (!p1.isCriticalHitCooldown) p2.damageHp(getP1DamagePower() * 2);
             }
@@ -168,7 +160,6 @@ export default async function fight(firstFighter, secondFighter) {
                 if (!p2.isCriticalHitCooldown) p1.damageHp(getP2DamagePower() * 2);
             }
 
-            // check winner
             if (p1.hp <= 0 || p2.hp <= 0) {
                 document.removeEventListener('keydown', keydownListener);
                 document.removeEventListener('keyup', keyupListener);
