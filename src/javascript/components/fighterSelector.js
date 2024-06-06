@@ -6,16 +6,20 @@ import fighterService from '../services/fightersService';
 
 const fighterDetailsMap = new Map();
 
+/**
+ * @param {string} fighterId
+ * @returns {object}
+ */
 export async function getFighterInfo(fighterId) {
-    if (fighterDetailsMap.get('_id') === fighterId) return fighterDetailsMap;
+    const cache = fighterDetailsMap.get(fighterId);
+
+    if (cache) return cache;
 
     const fighterDetails = await fighterService.getFighterDetails(fighterId);
 
-    Object.entries(fighterDetails).forEach(([key, value]) => {
-        fighterDetailsMap.set(key, value);
-    });
+    fighterDetailsMap.set(fighterId, fighterDetails);
 
-    return fighterDetailsMap;
+    return fighterDetails;
 }
 
 function startFight(selectedFighters) {

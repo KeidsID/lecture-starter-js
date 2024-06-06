@@ -1,7 +1,7 @@
 import createElement from '../helpers/domHelper';
 
 /**
- * @param {Map?} fighter
+ * @param {object?} fighter
  * @param {string} position
  * @returns {HTMLDivElement}
  */
@@ -16,18 +16,18 @@ export function createFighterPreview(fighter, position) {
         className: `fighter-preview___root ${positionClassName}`
     });
 
-    if (fighter === undefined) return fighterElement;
+    if (!fighter) return fighterElement;
 
-    const { source, name, health, attack, defense } = Object.fromEntries(fighter.entries());
-    const attributes = {
-        src: source,
-        title: name,
-        alt: name
-    };
+    const { source, name, health, attack, defense } = fighter;
+
     const imgElement = createElement({
         tagName: 'img',
         className: 'fighter-preview___img',
-        attributes
+        attributes: {
+            src: source,
+            title: name,
+            alt: name
+        }
     });
 
     const nameElement = createElement({ tagName: 'h1' });
