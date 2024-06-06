@@ -50,7 +50,7 @@ class FigtherStatus {
     /**
      * @type {Date | undefined}
      */
-    #recentCriticalTime;
+    #recentCriticalCdTime;
 
     /**
      * @param {number} initialHp
@@ -63,6 +63,9 @@ class FigtherStatus {
         this.isBlock = false;
     }
 
+    /**
+     * Current health point.
+     */
     get hp() {
         return this.#hp;
     }
@@ -85,20 +88,20 @@ class FigtherStatus {
     /**
      * Indicate critical hit is on cooldown.
      *
-     * This getter also reset the cooldown if returned true.
+     * This getter also reset the cooldown if returned `false`.
      */
     get isCriticalHitCooldown() {
-        if (this.#recentCriticalTime === undefined) {
-            this.#recentCriticalTime = new Date();
+        if (this.#recentCriticalCdTime === undefined) {
+            this.#recentCriticalCdTime = new Date();
             return false;
         }
 
         const now = new Date();
-        const diff = now - this.#recentCriticalTime;
+        const diff = now - this.#recentCriticalCdTime;
 
         // 10000 ms / 10 sec cooldown
         if (diff >= 10000) {
-            this.#recentCriticalTime = now;
+            this.#recentCriticalCdTime = now;
             return false;
         }
 
@@ -152,6 +155,10 @@ export default async function fight(firstFighter, secondFighter) {
             if (pressedKeys.has(PlayerTwoAttack) && !p2.isBlock) {
                 if (!p1.isBlock) p1.damageHp(getP2DamagePower());
             }
+
+            // do critical attack action
+            // block won't prevent critical hit
+            // instead it has cooldown for 10 sec
 
             if (PlayerOneCriticalHitCombination.every(key => pressedKeys.has(key))) {
                 if (!p1.isCriticalHitCooldown) p2.damageHp(getP1DamagePower() * 2);
